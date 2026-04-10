@@ -1,6 +1,6 @@
 import sqlite3
 
-DB_NAME = 'credentails.db'
+DB_NAME = 'credentials.db'
 
 def get_connection():
     return sqlite3.connect(DB_NAME)
