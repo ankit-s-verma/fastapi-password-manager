@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Credentials</title>
+</head>
+<body>
+    <h2>Stored Credentials</h2>
+
+    {% for website, accounts in data.items() %}
+        <h3>{{ website }}</h3>
+        <ul>
+            {% for acc in accounts %}
+                <li>{{ acc["username"] }} - {{ acc["password"] }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
+    <br><a href="/">Back</a>
+</body>
+</html> 

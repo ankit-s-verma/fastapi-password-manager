@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Credentials</title>
+</head>
+<body>
+    <h2>Stored Credentials</h2>
+
+    {% if not data %}
+        <p>No credentials found</p>
+    {% endif %}
+
+    {% for website, accounts in data.items() %}
+        <h3>{{ website }}</h3>
+        <ul>
+            {% for acc in accounts %}
+                <li>
+                    {{ acc["username"] }} -
+
+                    <span id="pwd-{{ website }}-{{ loop.index0 }}">********</span>
+
+                    <button onclick="togglePassword('{{ website }}-{{ loop.index0 }}', '{{ acc['password'] }}', this)">
+                        Show
+                    </button>
+
+                    <!-- UPDATE -->
+                    <button onclick="updateCredential('{{ website }}', '{{ acc['username'] }}')">
+                        Update
+                    </button>
+
+                    <!-- DELETE -->
+                    <button onclick="deleteCredential('{{ website }}', '{{ acc['username'] }}')">
+                        Delete
+                    </button>
+
+                </li>
+            {% endfor %}
+        </ul>
+        <hr>
+    {% endfor %}
+
+    <br><a href="/">Back</a>
+
+    <script>
+        function togglePassword(id, actualPassword, button) {
+            const element = document.getElementById("pwd-" + id);
+
+            if (element.innerText === "********") {
+                element.innerText = actualPassword;
+                button.innerText = "Hide";
+            } else {
+                element.innerText = "********";
+                button.innerText = "Show";
+            }
+        }
+
+        async function updateCredential(website, username) {
+            const newPassword = prompt("Enter new password:");
+            if (!newPassword || !newPassword.trim()) {
+                alert("Password cannot be empty");
+                return;
+            }
+
+            const encodedWebsite = encodeURIComponent(website);
+            const encodedUsername = encodeURIComponent(username);
+            const encodedPassword = encodeURIComponent(newPassword);
+
+            const response = await fetch(`/update/${encodedWebsite}/${encodedUsername}?password=${encodedPassword}`, {
+                method: "PUT"
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.detail || "Update failed");
+                return;
+            }
+
+            alert(data.message);
+            setTimeout(() => location.reload(), 500);
+        }
+
+        async function deleteCredential(website, username) {
+            if (!confirm("Delete this credential?")) return;
+
+            const encodedWebsite = encodeURIComponent(website);
+            const encodedUsername = encodeURIComponent(username);
+
+            const response = await fetch(`/delete/${encodedWebsite}/${encodedUsername}`, {
+                method: "DELETE"
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.detail || "Delete failed");
+                return;
+            }
+
+            alert(data.message);
+            setTimeout(() => location.reload(), 500);
+        }
+    </script>
+</body>
+</html>
