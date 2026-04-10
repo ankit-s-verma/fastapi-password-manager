@@ -108,6 +108,18 @@ http://127.0.0.1:8000
 
 ---
 
+## 🌍 Live Demo
+
+Note: The app may take a few seconds to load due to free-tier hosting.
+
+```
+https://fastapi-password-manager.onrender.com/
+```
+
+
+
+---
+
 ## 📡 API Endpoints
 
 | Method | Endpoint       | Description                |
